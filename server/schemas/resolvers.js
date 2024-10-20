@@ -67,17 +67,9 @@ const resolvers = {
             }
             throw AuthenticationError
         },
-        addEntry: async (parent,{date,priorities,habits,gratitudes,freeWrite},context) => {
+        addEntry: async (parent,{date},context) => {
             if (context.user){
-                return await Entry.create(
-                    {
-                        date,
-                        priorities,
-                        habits,
-                        gratitudes,
-                        freeWrite
-                    }
-                )
+                return await Entry.create({date})
             }
             throw AuthenticationError
         },
