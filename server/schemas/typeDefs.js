@@ -79,14 +79,14 @@ type Mutation {
     addEvent(dayId:ID!,event:EventInput):Day
     editEvent(dayId:ID!,eventId:ID!,event:EventInput):Day
     deleteEvent(dayId:ID!,eventId:ID!):Day
-    addEntry(date:String,gratitudes:String,freeWrite:String):Entry
+    addEntry(date:String!):Entry
     editEntry(entryId:ID!,gratitudes:String,freeWrite:String):Entry
-    addPriority(entryId:ID!,priority:PriorityInput!)
-    editPriority(entryId:ID!,priorityId:ID!,priority:PriorityInput!)
-    deletePriority(entryId:ID!,priorityId:ID!)
-    addHabit(entryId:ID!,habit:HabitInput!)
-    editHabit(entryId:ID!,habitId:ID!,habit:HabitInput!)
-    editHabit(entryId:ID!,habitId:ID!)
+    addPriority(entryId:ID!,priority:PriorityInput!):Entry
+    editPriority(entryId:ID!,priorityId:ID!,priority:PriorityInput!):Entry
+    deletePriority(entryId:ID!,priorityId:ID!):Entry
+    addHabit(entryId:ID!,habit:HabitInput!):Entry
+    editHabit(entryId:ID!,habitId:ID!,habit:HabitInput!):Entry
+    deleteHabit(entryId:ID!,habitId:ID!):Entry
 }
 `
 
