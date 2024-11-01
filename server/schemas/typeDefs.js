@@ -1,33 +1,35 @@
 const typeDefs = `
 
+scalar Date
+
 type User {
     _id:ID
     username:String!
     password:String!
-    schedual:[Day]
-    journal:[Entry]
 }
 
 type Day {
     _id:ID 
-    date:String!
+    date:Date!
     events:[Event]
+    user:User
 }
 
 type Entry {
     _id:ID 
-    date:String!
+    date:Date!
     priorities:[Priority]
     habits:[Habit]
     gratitudes:String
     freeWrite:String
+    user:User
 }
 
 type Event {
     _id:ID 
     name:String!
-    startTime:String!
-    endTime:String!
+    startTime:Date!
+    endTime:Date!
     location:String
 }
 
@@ -46,8 +48,8 @@ type Habit {
 input EventInput {
     _id:ID 
     name:String!
-    startTime:String!
-    endTime:String!
+    startTime:Date!
+    endTime:Date!
     location:String
 }
 
@@ -70,22 +72,24 @@ type Auth {
 
 type Query {
     me: User
+    getDay(date:Date!): Day
+    getEntry(date:Date!): Entry
 }
 
 type Mutation {
     signup(username:String!,password:String!): Auth
     login(username:String!,password:String!): Auth
-    addDay(date:String!):Day
+    addDay(date:Date!):Day
     addEvent(dayId:ID!,event:EventInput):Day
     editEvent(dayId:ID!,eventId:ID!,event:EventInput):Day
     deleteEvent(dayId:ID!,eventId:ID!):Day
-    addEntry(date:String!):Entry
+    addEntry(date:Date!):Entry
     editEntry(entryId:ID!,gratitudes:String,freeWrite:String):Entry
-    addPriority(entryId:ID!,priority:PriorityInput!):Entry
-    editPriority(entryId:ID!,priorityId:ID!,priority:PriorityInput!):Entry
+    addPriority(entryId:ID!,name:String!):Entry
+    editPriority(entryId:ID!,priorityId:ID!,isDone:Boolean!):Entry
     deletePriority(entryId:ID!,priorityId:ID!):Entry
-    addHabit(entryId:ID!,habit:HabitInput!):Entry
-    editHabit(entryId:ID!,habitId:ID!,habit:HabitInput!):Entry
+    addHabit(entryId:ID!,name:String!):Entry
+    editHabit(entryId:ID!,habitId:ID!,isDone:Boolean!):Entry
     deleteHabit(entryId:ID!,habitId:ID!):Entry
 }
 `
