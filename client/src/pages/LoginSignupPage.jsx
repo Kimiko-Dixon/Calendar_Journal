@@ -1,7 +1,11 @@
-const SignupLoginPage = ()=>{
-    return (
-        <h1>SignupLoginPage Page</h1>
-    )
-}
+import Auth from '../utils/auth'
+import LoginSignup from '../components/LoginSignup'
 
-export default SignupLoginPage
+const LoginSignupPage = () => {
+    Auth.loggedIn() ? window.location.assign('/') : null
+  return (
+    <LoginSignup/>
+  );
+};
+
+export default LoginSignupPage;

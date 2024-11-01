@@ -1,5 +1,6 @@
 import {gql} from '@apollo/client'
 
+//✔
 export const SIGNUP = gql`
     mutation Signup($username: String!, $password: String!) {
   signup(username: $username, password: $password) {
@@ -10,7 +11,7 @@ export const SIGNUP = gql`
   }
 }
 `
-
+//✔
 export const LOGIN = gql`
     mutation Login($username: String!, $password: String!) {
   login(username: $username, password: $password) {
@@ -22,25 +23,22 @@ export const LOGIN = gql`
 }
 `
 
+//✔
 export const ADD_DAY = gql`
-    mutation AddDay($date: String!) {
+    mutation AddDay($date: Date!) {
   addDay(date: $date) {
     _id
     date
-    events {
+    user {
       _id
-      name
-      startTime
-      endTime
-      location
     }
   }
 }
 `
-
+//✔ fix duplication on backend
 export const ADD_EVENT = gql`
-    mutation AddEvent($dayId: ID!, $event: EventInput) {
-  addEvent(dayId: $dayId, event: $event) {
+    mutation AddEvent($addEventDayId2: ID!, $event: EventInput) {
+  addEvent(dayId: $addEventDayId2, event: $event) {
     _id
     date
     events {
@@ -50,13 +48,16 @@ export const ADD_EVENT = gql`
       endTime
       location
     }
+    user {
+      _id
+    }
   }
 }
 `
-
+//✔
 export const EDIT_EVENT = gql`
-    mutation EditEvent($dayId: ID!, $eventId: ID!, $event: EventInput) {
-  editEvent(dayId: $dayId, eventId: $eventId, event: $event) {
+    mutation EditEvent($editEventDayId2: ID!, $eventId: ID!, $editEventEvent2: EventInput) {
+  editEvent(dayId: $editEventDayId2, eventId: $eventId, event: $editEventEvent2) {
     _id
     date
     events {
@@ -66,13 +67,16 @@ export const EDIT_EVENT = gql`
       endTime
       location
     }
+    user {
+      _id
+    }
   }
 }
 `
-
+//✔
 export const DELETE_EVENT = gql`
-    mutation DeleteEvent($dayId: ID!, $eventId: ID!) {
-  deleteEvent(dayId: $dayId, eventId: $eventId) {
+    mutation DeleteEvent($deleteEventDayId2: ID!, $deleteEventEventId2: ID!) {
+  deleteEvent(dayId: $deleteEventDayId2, eventId: $deleteEventEventId2) {
     _id
     date
     events {
@@ -82,55 +86,59 @@ export const DELETE_EVENT = gql`
       endTime
       location
     }
+    user {
+      _id
+    }
   }
 }
 `
-
+//✔
 export const ADD_ENTRY = gql`
-    mutation AddEntry($date: String) {
+    mutation AddEntry($date: Date!) {
   addEntry(date: $date) {
     _id
     date
-    priorities {
+    user {
       _id
     }
-    habits {
-      _id
-    }
-    gratitudes
-    freeWrite
   }
 }
 `
-
+//✔
 export const EDIT_ENTRY = gql`
-    mutation EditEntry($entryId: ID!, $gratitudes: String, $freeWrite: String) {
+   mutation EditEntry($entryId: ID!, $gratitudes: String, $freeWrite: String) {
   editEntry(entryId: $entryId, gratitudes: $gratitudes, freeWrite: $freeWrite) {
     _id
     date
     gratitudes
     freeWrite
+    user {
+      _id
+    }
   }
 }
 `
-
+//✔ fix duplication on backend
 export const ADD_PRIORITY = gql`
-    mutation AddPriority($entryId: ID!, $priority: PriorityInput!) {
-  addPriority(entryId: $entryId, priority: $priority) {
+    mutation AddPriority($entryId: ID!, $name: String!) {
+  addPriority(entryId: $entryId, name: $name) {
     _id
-    date
     priorities {
       _id
       name
       isDone
     }
+    date
+    user {
+      _id
+    }
   }
 }
 `
-
+//✔
 export const EDIT_PRIORITY = gql`
-    mutation EditPriority($entryId: ID!, $priorityId: ID!, $priority: PriorityInput!) {
-  editPriority(entryId: $entryId, priorityId: $priorityId, priority: $priority) {
+   mutation EditPriority($entryId: ID!, $priorityId: ID!, $isDone: Boolean!) {
+  editPriority(entryId: $entryId, priorityId: $priorityId, isDone: $isDone) {
     _id
     date
     priorities {
@@ -138,10 +146,13 @@ export const EDIT_PRIORITY = gql`
       name
       isDone
     }
+    user {
+      _id
+    }
   }
 }
 `
-
+//✔
 export const DELETE_PRIORITY = gql`
     mutation DeletePriority($entryId: ID!, $priorityId: ID!) {
   deletePriority(entryId: $entryId, priorityId: $priorityId) {
@@ -152,10 +163,13 @@ export const DELETE_PRIORITY = gql`
       name
       isDone
     }
+    user {
+      _id
+    }
   }
 }
 `
-
+//✔ fix duplication on backend
 export const ADD_HABIT = gql`
     mutation AddHabit($entryId: ID!, $habit: HabitInput!) {
   addHabit(entryId: $entryId, habit: $habit) {
@@ -166,10 +180,13 @@ export const ADD_HABIT = gql`
       name
       isDone
     }
+    user {
+      _id
+    }
   }
 }
 `
-
+//✔
 export const EDIT_HABIT = gql`
     mutation EditHabit($entryId: ID!, $habitId: ID!, $habit: HabitInput!) {
   editHabit(entryId: $entryId, habitId: $habitId, habit: $habit) {
@@ -180,10 +197,13 @@ export const EDIT_HABIT = gql`
       name
       isDone
     }
+    user {
+      _id
+    }
   }
 }
 `
-
+//✔
 export const DELETE_HABIT = gql`
     mutation DeleteHabit($entryId: ID!, $habitId: ID!) {
   deleteHabit(entryId: $entryId, habitId: $habitId) {
@@ -193,6 +213,9 @@ export const DELETE_HABIT = gql`
       _id
       name
       isDone
+    }
+    user {
+      _id
     }
   }
 }

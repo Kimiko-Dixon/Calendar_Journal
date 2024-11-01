@@ -3,7 +3,7 @@ const date = require('date-and-time')
 const meridiem = require('date-and-time/plugin/meridiem')
 date.plugin(meridiem)
 
-const prioritySchema = new Schema(
+const eventSchema = new Schema(
     {
         name:{
             type:String,
@@ -12,28 +12,28 @@ const prioritySchema = new Schema(
         startTime:{
             type:Date,
             required:true,
-            get:formatTime
+            /* get:formatTime */
         },
         endTime:{
             type:Date,
             required:true,
-            get:formatTime
+            /* get:formatTime */
         },
         Location:{
             type:String,
         }
     },
-    {
+    /* {
         toJSON:{
             getters:true
         },
         id:false
-    }
+    } */
 )
 
-function formatTime(day){
+/* function formatTime(day){
     return date.format(day,'h:mm a')
-}
+} */
 
 
-module.exports = prioritySchema
+module.exports = eventSchema

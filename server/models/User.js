@@ -15,21 +15,22 @@ const userSchema = new Schema(
             required:true,
             trim:true
         },
-        schedule:[{
+        /* schedule:[{
             type:Schema.Types.ObjectId,
             ref:'day'
         }],
         journal:[{
             type:Schema.Types.ObjectId,
             ref:'entry'
-        }]
+        }] */
     },
 )
 
 userSchema.pre('save', async function (next) {
     if (this.isNew || this.isModified('password')) {
-        this.passord = await bcrypt.hash(this.password,10)
+        this.password = await bcrypt.hash(this.password,10)
     }
+    next()
 })
 
 userSchema.methods.isCorrectPassword = async function (password){
