@@ -7,8 +7,19 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { Outlet } from "react-router-dom";
+import {ChakraProvider, createSystem,defineConfig} from '@chakra-ui/react'
 
 // import Nav from "./components/nav";
+
+const config = defineConfig({
+  theme: {
+    tokens: {
+      colors: {},
+    },
+  },
+})
+
+const system = createSystem(config)
 
 const httpLink = createHttpLink({
   uri: "/graphql",
@@ -32,10 +43,13 @@ const client = new ApolloClient({
 
 function App() {
   return (
-    <ApolloProvider client={client}>
+    <ChakraProvider value={system}>
+      <ApolloProvider client={client}>
       {/* <Nav /> */}
       <Outlet />
     </ApolloProvider>
+    </ChakraProvider>
+    
   );
 }
 

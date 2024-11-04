@@ -137,17 +137,17 @@ export const ADD_PRIORITY = gql`
 `
 //✔
 export const EDIT_PRIORITY = gql`
-   mutation EditPriority($entryId: ID!, $priorityId: ID!, $isDone: Boolean!) {
-  editPriority(entryId: $entryId, priorityId: $priorityId, isDone: $isDone) {
+   mutation EditPriority($entryId: ID!, $priorityId: ID!, $name: String, $isDone: Boolean) {
+  editPriority(entryId: $entryId, priorityId: $priorityId, name: $name, isDone: $isDone) {
     _id
     date
+    user {
+      _id
+    }
     priorities {
       _id
       name
       isDone
-    }
-    user {
-      _id
     }
   }
 }

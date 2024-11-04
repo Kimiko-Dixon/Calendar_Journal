@@ -172,10 +172,15 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
-    editPriority: async (parent, { entryId, isDone, priorityId }, context) => {
+    editPriority: async (parent, { entryId,name,isDone, priorityId }, context) => {
       if (context.user) {
         const entry = await Entry.findById({ _id: entryId });
-        entry.priorities.id(priorityId).isDone = isDone;
+        if(name){
+          entry.priorities.id(priorityId).name = name
+        }
+        if(isDone != null){
+          entry.priorities.id(priorityId).isDone = isDone;
+        }
         entry.markModified("priorities");
         entry.save();
         return entry;
