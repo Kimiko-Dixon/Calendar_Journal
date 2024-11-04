@@ -86,7 +86,7 @@ type Mutation {
     addEntry(date:Date!):Entry
     editEntry(entryId:ID!,gratitudes:String,freeWrite:String):Entry
     addPriority(entryId:ID!,name:String!):Entry
-    editPriority(entryId:ID!,priorityId:ID!,isDone:Boolean!):Entry
+    editPriority(entryId:ID!,priorityId:ID!,name:String,isDone:Boolean):Entry
     deletePriority(entryId:ID!,priorityId:ID!):Entry
     addHabit(entryId:ID!,name:String!):Entry
     editHabit(entryId:ID!,habitId:ID!,isDone:Boolean!):Entry
