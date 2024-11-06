@@ -13,7 +13,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import Auth from "../utils/auth";
 import { GET_ME, GET_ENTRY } from "../utils/queries";
 ("use client");
-import { Button, Editable, IconButton } from "@chakra-ui/react";
+import { Editable } from "@chakra-ui/react";
 
 const Journal = () => {
   Auth.loggedIn() ? null : window.location.assign("/login");
@@ -27,7 +27,6 @@ const Journal = () => {
   const [editHabit] = useMutation(EDIT_HABIT)
   const [deleteHabit] = useMutation(DELETE_HABIT) */
   const [newPriority, setNewPriority] = useState("");
-  const[priorityName, setPriorityName] = useState('')
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const {data:entryData} = useQuery(GET_ENTRY, {
     variables: {date}
@@ -54,14 +53,11 @@ const Journal = () => {
       }
   }, [date]);
 
-  const handleEditPriority = async (priorityId,{isDone,name}) => {
+  const handleEditPriority = async (priorityId,isDone) => {
     try{
       await editPriority({
         variables:{entryId,priorityId,name:name,isDone:!isDone}
       })
-      if(name){
-        setPriorityName("")
-      }
       
     }
     catch (err) {
@@ -103,19 +99,9 @@ const Journal = () => {
               name={priority.name}
               id={priority._id}
               checked={priority.isDone}
-              onChange={(e) =>  handleEditPriority(e.target.id,{isDone:priority.isDone})}
+              onChange={(e) =>  handleEditPriority(e.target.id,priority.isDone)}
             />
-            {/* <label htmlFor={priority.name}>{priority.name}</label> */}
-            <Editable.Root
-          value={priority.name}
-          onFocus={(e) => {setPriorityName(priority.name); e.value = priorityName}}
-          onValueChange={(e) => setPriorityName(e.value)}
-          /* onBlur={console.log(priorityName)} */
-          onBlur={() => handleEditPriority(priority._id,{name:priorityName})}
-        >
-          <Editable.Preview/>
-          <Editable.Input />
-        </Editable.Root>
+            <label htmlFor={priority.name}>{priority.name}</label>
           </div>
           )
         })}
