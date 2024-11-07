@@ -161,7 +161,6 @@ const resolvers = {
           { $addToSet: { priorities: {name} } },
           { new: true }
         );
-
         /* const entry = await Entry.updateOne(
           { _id: entryId, 'priorities.name': {$ne: name} },
           { $push: { priorities: {name} } },

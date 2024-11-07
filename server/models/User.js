@@ -1,21 +1,20 @@
-const {Schema,model} = require('mongoose')
-const bcrypt = require('bcrypt')
+const { Schema, model } = require("mongoose");
+const bcrypt = require("bcrypt");
 
-const userSchema = new Schema(
-    {
-        username:{
-            type:String,
-            unique:true,
-            required:true,
-            trim:true
-        },
-        password:{
-            type:String,
-            unique:true,
-            required:true,
-            trim:true
-        },
-        /* schedule:[{
+const userSchema = new Schema({
+  username: {
+    type: String,
+    unique: true,
+    required: true,
+    trim: true,
+  },
+  password: {
+    type: String,
+    unique: true,
+    required: true,
+    trim: true,
+  },
+  /* schedule:[{
             type:Schema.Types.ObjectId,
             ref:'day'
         }],
@@ -23,19 +22,18 @@ const userSchema = new Schema(
             type:Schema.Types.ObjectId,
             ref:'entry'
         }] */
-    },
-)
+});
 
-userSchema.pre('save', async function (next) {
-    if (this.isNew || this.isModified('password')) {
-        this.password = await bcrypt.hash(this.password,10)
-    }
-    next()
-})
+userSchema.pre("save", async function (next) {
+  if (this.isNew || this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+  next();
+});
 
-userSchema.methods.isCorrectPassword = async function (password){
-    return bcrypt.compare(password,this.password)
-}
+userSchema.methods.isCorrectPassword = async function (password) {
+  return bcrypt.compare(password, this.password);
+};
 
-const User = model('user',userSchema)
-module.exports = User
+const User = model("user", userSchema);
+module.exports = User;

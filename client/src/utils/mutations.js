@@ -171,8 +171,8 @@ export const DELETE_PRIORITY = gql`
 `
 //✔ fix duplication on backend
 export const ADD_HABIT = gql`
-    mutation AddHabit($entryId: ID!, $habit: HabitInput!) {
-  addHabit(entryId: $entryId, habit: $habit) {
+    mutation AddHabit($entryId: ID!, $name: String!) {
+  addHabit(entryId: $entryId, name: $name) {
     _id
     date
     habits {
@@ -188,8 +188,8 @@ export const ADD_HABIT = gql`
 `
 //✔
 export const EDIT_HABIT = gql`
-    mutation EditHabit($entryId: ID!, $habitId: ID!, $habit: HabitInput!) {
-  editHabit(entryId: $entryId, habitId: $habitId, habit: $habit) {
+    mutation EditHabit($entryId: ID!, $habitId: ID!, $isDone:Boolean) {
+  editHabit(entryId: $entryId, habitId: $habitId, isDone:$isDone) {
     _id
     date
     habits {
