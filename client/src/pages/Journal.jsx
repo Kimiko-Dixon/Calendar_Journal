@@ -23,8 +23,8 @@ const Journal = () => {
   const { data } = useQuery(GET_ME);
   const [addPriority] = useMutation(ADD_PRIORITY);
   const [editPriority] = useMutation(EDIT_PRIORITY)
-  /*const [deletePriority] = useMutation(DELETE_PRIORITY)
-  const [addHabit] = useMutation(ADD_HABIT)
+  const [deletePriority] = useMutation(DELETE_PRIORITY)
+  /*const [addHabit] = useMutation(ADD_HABIT)
   const [editHabit] = useMutation(EDIT_HABIT)
   const [deleteHabit] = useMutation(DELETE_HABIT) */
   const [newPriority, setNewPriority] = useState("");
@@ -77,6 +77,17 @@ const Journal = () => {
       console.log(err);
     }
   };
+
+  const handleDeletePriority = async (priorityId) => {
+    try {
+      await deletePriority({
+        variables: { entryId, priorityId},
+        refetchQueries:[{query:GET_ENTRY,variables: {date}}]
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
   return (
     <>
       <input
@@ -103,6 +114,9 @@ const Journal = () => {
               onChange={(e) =>  handleEditPriority(e.target.id,priority.isDone)}
             />
             <label htmlFor={priority.name}>{priority.name}</label>
+            <IconButton variant="ghost" size="xs" onClick={() => handleDeletePriority(priority._id)}>
+            <LuX />
+          </IconButton>
           </div>
           )
         })}
