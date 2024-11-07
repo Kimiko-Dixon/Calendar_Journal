@@ -13,7 +13,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import Auth from "../utils/auth";
 import { GET_ME, GET_ENTRY } from "../utils/queries";
 ("use client");
-import { Editable } from "@chakra-ui/react";
+import { LuCheck, LuPencilLine, LuX } from "react-icons/lu"
+import { Editable,IconButton } from "@chakra-ui/react";
 
 const Journal = () => {
   Auth.loggedIn() ? null : window.location.assign("/login");
@@ -31,7 +32,6 @@ const Journal = () => {
   const {data:entryData} = useQuery(GET_ENTRY, {
     variables: {date}
   })
-  console.log(entryData);
   const user = data?.me || {};
   const todaysEntry = entryData?.getEntry || [];
   const [entryId,setEntryId] = useState()
@@ -40,6 +40,7 @@ const Journal = () => {
     try {
       const {data} = await addEntry({
         variables: { userId: user._id, date: date },
+        refetchQueries:[{query:GET_ENTRY,variables: {date}}]
       });
       setEntryId(data.addEntry._id)
     } catch (err) {
@@ -56,7 +57,7 @@ const Journal = () => {
   const handleEditPriority = async (priorityId,isDone) => {
     try{
       await editPriority({
-        variables:{entryId,priorityId,name:name,isDone:!isDone}
+        variables:{entryId,priorityId,isDone:!isDone}
       })
       
     }
@@ -109,11 +110,28 @@ const Journal = () => {
         <Editable.Root
           value={newPriority}
           onValueChange={(e) => setNewPriority(e.value)}
-          onBlur={handelNewPriority}
-          placeholder="Enter New Priority"
+          onValueCommit={handelNewPriority}
+          placeholder=""
         >
           <Editable.Preview/>
           <Editable.Input />
+          <Editable.Control>
+        <Editable.EditTrigger asChild>
+          <IconButton variant="ghost" size="xs">
+            <LuPencilLine />
+          </IconButton>
+        </Editable.EditTrigger>
+        <Editable.CancelTrigger asChild>
+          <IconButton variant="outline" size="xs">
+            <LuX />
+          </IconButton>
+        </Editable.CancelTrigger>
+        <Editable.SubmitTrigger asChild>
+          <IconButton variant="outline" size="xs">
+            <LuCheck />
+          </IconButton>
+        </Editable.SubmitTrigger>
+      </Editable.Control>
         </Editable.Root>
       </form>
       {/* Habit Tracker */}
