@@ -45,7 +45,10 @@ export const GET_ENTRY = gql`
       name
       isDone
     }
-    gratitudes
+    gratitudes {
+      _id
+      text
+    }
     freeWrite
     user {
       _id

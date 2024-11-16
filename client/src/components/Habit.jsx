@@ -6,20 +6,20 @@ import { GET_ENTRY } from "../utils/queries";
 import { LuCheck, LuPencilLine, LuX } from "react-icons/lu";
 import { Editable, IconButton } from "@chakra-ui/react";
 
-const Habit = ({ entryId, date }) => {
+const Habit = ({ entry, date }) => {
   const [addHabit] = useMutation(ADD_HABIT);
   const [editHabit] = useMutation(EDIT_HABIT);
   const [deleteHabit] = useMutation(DELETE_HABIT);
   const [newHabit, setNewHabit] = useState("");
-  const { data: entryData } = useQuery(GET_ENTRY, {
+  /* const { data: entryData } = useQuery(GET_ENTRY, {
     variables: { date },
   });
-  const todaysEntry = entryData?.getEntry || [];
+  const todaysEntry = entryData?.getEntry || []; */
 
   const handleEditHabit = async (habitId, isDone) => {
     try {
       await editHabit({
-        variables: { entryId, habitId, isDone: !isDone },
+        variables: { entryId: entry._id, habitId, isDone: !isDone },
       });
     } catch (err) {
       console.log(err);
@@ -31,7 +31,7 @@ const Habit = ({ entryId, date }) => {
     if (newHabit.trim() != "") {
       try {
         await addHabit({
-          variables: { entryId, name: newHabit },
+          variables: { entryId: entry._id, name: newHabit },
         });
         setNewHabit("");
       } catch (err) {
@@ -43,7 +43,7 @@ const Habit = ({ entryId, date }) => {
   const handleDeleteHabit = async (habitId) => {
     try {
       await deleteHabit({
-        variables: { entryId, habitId },
+        variables: { entryId: entry._id, habitId },
         refetchQueries: [{ query: GET_ENTRY, variables: { date } }],
       });
     } catch (err) {
@@ -53,7 +53,7 @@ const Habit = ({ entryId, date }) => {
   return (
     <>
       <form id="habits-form">
-        {todaysEntry?.habits?.map((habit) => {
+        {entry?.habits?.map((habit) => {
           return (
             <div key={habit._id}>
               <input

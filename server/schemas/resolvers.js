@@ -130,12 +130,11 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
-    editEntry: async (parent, { entryId, gratitudes, freeWrite }, context) => {
+    editFreeWrite: async (parent, { entryId,freeWrite }, context) => {
       if (context.user) {
         return await Entry.findOneAndUpdate(
           { _id: entryId },
           {
-            gratitudes,
             freeWrite,
           },
           { new: true }
@@ -144,30 +143,44 @@ const resolvers = {
       throw AuthenticationError;
     },
     //Fix duplication
+    addGratitude: async (parent, { entryId, text }, context) => {
+      if (context.user) {
+        return await Entry.findOneAndUpdate(
+          { _id: entryId },
+          { $addToSet: { gratitudes: {text} } },
+          { new: true }
+        );
+      }
+      throw AuthenticationError;
+    },
+    editGratitude: async (parent, { entryId,gratitudeId,text }, context) => {
+      if (context.user) {
+        const entry = await Entry.findById({ _id: entryId });
+        entry.gratitudes.id(gratitudeId).text = text
+        entry.markModified("gratitudes");
+        entry.save();
+        return entry;
+      }
+      throw AuthenticationError;
+    },
+    deleteGratitude: async (parent, { entryId, gratitudeId }, context) => {
+      if (context.user) {
+        return await Entry.findOneAndUpdate(
+          { _id: entryId },
+          { $pull: { gratitudes: { _id: gratitudeId } } },
+          { new: true }
+        );
+      }
+      throw AuthenticationError;
+    },
+    //Fix duplication
     addPriority: async (parent, { entryId, name }, context) => {
       if (context.user) {
-       /*  const entry = await Entry.findOne({
-          _id: entryId,
-          priorities: [{ name }],
-        });
-        if (entry) {
-          return entry;
-        } */
-        /* entry.priorities.push({ name });
-        entry.markModified("priorities");
-        await entry.save(); */
         return await Entry.findOneAndUpdate(
           { _id: entryId },
           { $addToSet: { priorities: {name} } },
           { new: true }
         );
-        /* const entry = await Entry.updateOne(
-          { _id: entryId, 'priorities.name': {$ne: name} },
-          { $push: { priorities: {name} } },
-          {new: true}
-        )
-        entry.save()
-        return entry */
       }
       throw AuthenticationError;
     },

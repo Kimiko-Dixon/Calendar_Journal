@@ -16,6 +16,7 @@ const config = defineConfig({
     tokens: {
       colors: {},
     },
+    recipes: {}
   },
 })
 
