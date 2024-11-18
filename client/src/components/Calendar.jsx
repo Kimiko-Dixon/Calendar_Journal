@@ -65,7 +65,7 @@ const CalendarComp = () => {
             </Button>
           </Box>
         </HStack>
-        <Box border="1px,solid, black">
+        <Box border="1px,solid, black" py="3">
           <Grid templateColumns="repeat(7, 1fr)" gap="6">
             {/* figure out fr and gap */}
             <GridItem>
