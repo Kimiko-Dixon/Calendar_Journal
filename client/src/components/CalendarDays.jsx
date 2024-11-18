@@ -20,7 +20,15 @@ const CalendarDays = ({ day }) => {
       onOpenChange={(e) => setOpen(e.open)}
     >
       <PopoverTrigger asChild>
-        <Button variant="plain">{day}</Button>
+        <Button
+          h="10svh"
+          variant="plain"
+          display="flex"
+          justifyContent="left"
+          alignItems="flex-start"
+        >
+          {day}
+        </Button>
       </PopoverTrigger>
       <PopoverContent>
         <PopoverArrow />

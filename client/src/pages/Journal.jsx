@@ -1,124 +1,122 @@
 import {
   ADD_ENTRY,
-  EDIT_ENTRY,
-  ADD_PRIORITY,
-  EDIT_PRIORITY,
-  DELETE_PRIORITY,
-  ADD_HABIT,
-  EDIT_HABIT,
-  DELETE_HABIT,
+  EDIT_FREEWRITE,
 } from "../utils/mutations";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import Auth from "../utils/auth";
 import { GET_ME, GET_ENTRY } from "../utils/queries";
 ("use client");
-import { Editable } from "@chakra-ui/react";
+import { LuCheck, LuPencilLine, LuX } from "react-icons/lu";
+import { Editable, IconButton } from "@chakra-ui/react";
+import Priority from "../components/Priority";
+import Habit from "../components/Habit";
+import Gratitude from "../components/Gratitude";
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc'
+dayjs.extend(utc);
 
 const Journal = () => {
   Auth.loggedIn() ? null : window.location.assign("/login");
   const [addEntry] = useMutation(ADD_ENTRY);
-  //   const [editEntry] = useMutation(EDIT_ENTRY)
-  const { data } = useQuery(GET_ME);
-  const [addPriority] = useMutation(ADD_PRIORITY);
-  const [editPriority] = useMutation(EDIT_PRIORITY)
-  /*const [deletePriority] = useMutation(DELETE_PRIORITY)
-  const [addHabit] = useMutation(ADD_HABIT)
-  const [editHabit] = useMutation(EDIT_HABIT)
-  const [deleteHabit] = useMutation(DELETE_HABIT) */
-  const [newPriority, setNewPriority] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const {data:entryData} = useQuery(GET_ENTRY, {
-    variables: {date}
-  })
-  console.log(entryData);
-  const user = data?.me || {};
-  const todaysEntry = entryData?.getEntry || [];
-  const [entryId,setEntryId] = useState()
+  const [editFreeWrite] = useMutation(EDIT_FREEWRITE)
+  const { data:userData } = useQuery(GET_ME);
+  const [date, setDate] = useState(dayjs().format('YYYY-MM-DD'));
+  const { loading,data: entryData } = useQuery(GET_ENTRY, {
+    variables: { date },
+  });
+  const [entry, setEntry] = useState();
+  const [freeWrite,setFreeWrite] = useState("")
+  console.log('freeWrite: ',freeWrite)
+  
+  const user = userData?.me || {};
+  const todaysEntry = useMemo(() => entryData?.getEntry,[date,entryData]) 
+  
 
   const handleNewEntry = async () => {
     try {
-      const {data} = await addEntry({
+      const { data } = await addEntry({
         variables: { userId: user._id, date: date },
+        refetchQueries: [{ query: GET_ENTRY, variables: { date } }],
       });
-      setEntryId(data.addEntry._id)
+      setEntry(data.addEntry);
+      setFreeWrite(data.addEntry.freeWrite === null ? '' : data.addEntry.freeWrite)
+      console.log('data: ',data,'entry:', data.addEntry,'freewrite: ', data.addEntry.freeWrite)
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-      if(todaysEntry){
-        handleNewEntry();
-      }
+    if (dayjs(date).utc().format('YYYY-MM-DD') != dayjs(todaysEntry?.date).utc().format('YYYY-MM-DD')) {
+      /* console.log('test: ', dayjs(date).utc().format('YYYY-MM-DD') != dayjs(todaysEntry?.date).utc().format('YYYY-MM-DD'))
+      console.log(dayjs(todaysEntry?.date).utc().format('YYYY-MM-DD')) */
+      handleNewEntry();
+      /* console.log('freeWrite: ',todaysEntry?.freeWrite) */
+    }
   }, [date]);
 
-  const handleEditPriority = async (priorityId,isDone) => {
+  useEffect(()=>{
+    setEntry(todaysEntry);
+    setFreeWrite(todaysEntry?.freeWrite === null ? '' : todaysEntry?.freeWrite)
+    console.log('entry: ',todaysEntry)
+  },[todaysEntry])
+
+  const handleFreeWriteEdit = async () => {
     try{
-      await editPriority({
-        variables:{entryId,priorityId,name:name,isDone:!isDone}
+      await editFreeWrite({
+        variables:{entryId: entry._id, freeWrite}
       })
-      
-    }
-    catch (err) {
+    }catch (err) {
       console.log(err);
     }
   }
 
-  const handelNewPriority = async (/* entry */) => {
-    // add priority to the database and clear newPriority
-    try {
-      await addPriority({
-        variables: { entryId, name: newPriority },
-      });
-      setNewPriority("")
-    } catch (err) {
-      console.log(err);
-    }
-  };
   return (
     <>
       <input
         type="date"
         name="date"
         id="date"
-        value={date}
+        defaultValue={date}
         onChange={(e) => {
           setDate(e.target.value);
           console.log(e.target.value);
         }}
       />
-      {/* {handleNewEntry()} */}
-      {/* Priorities */}
-      <form id="priorities-form">
-        {todaysEntry?.priorities?.map((priority) => {
-          return (
-            <div key={priority._id}>
-            <input
-              type="checkbox"
-              name={priority.name}
-              id={priority._id}
-              checked={priority.isDone}
-              onChange={(e) =>  handleEditPriority(e.target.id,priority.isDone)}
-            />
-            <label htmlFor={priority.name}>{priority.name}</label>
-          </div>
-          )
-        })}
-        {/* <input type="text" onChange={(e) => setNewPriority(e.target.value)} onBlur={handelNewPriority} value={newPriority}/> */}
-        <Editable.Root
-          value={newPriority}
-          onValueChange={(e) => setNewPriority(e.value)}
-          onBlur={handelNewPriority}
-          placeholder="Enter New Priority"
-        >
-          <Editable.Preview/>
-          <Editable.Input />
-        </Editable.Root>
-      </form>
-      {/* Habit Tracker */}
-      {/* graditudes */}
+      <Priority entry={entry} date={date} />
+      <Habit entry={entry} date={date} />
+      <Gratitude entry={entry} date={date}/>
       {/* freewrite */}
+      
+        <form id="freewrite-form">
+        <Editable.Root
+            value={freeWrite}
+            onValueChange={(e) => {setFreeWrite(e.value)}}
+            onValueCommit={handleFreeWriteEdit}
+            placeholder="Freewrite"
+          >
+            <Editable.Preview />
+            <Editable.Textarea />
+            <Editable.Control>
+              <Editable.EditTrigger asChild>
+                <IconButton variant="ghost" size="xs">
+                  <LuPencilLine />
+                </IconButton>
+              </Editable.EditTrigger>
+              <Editable.CancelTrigger asChild>
+                <IconButton variant="outline" size="xs">
+                  <LuX />
+                </IconButton>
+              </Editable.CancelTrigger>
+              <Editable.SubmitTrigger asChild>
+                <IconButton variant="outline" size="xs">
+                  <LuCheck />
+                </IconButton>
+              </Editable.SubmitTrigger> 
+            </Editable.Control>
+          </Editable.Root>
+        </form>
     </>
   );
 };

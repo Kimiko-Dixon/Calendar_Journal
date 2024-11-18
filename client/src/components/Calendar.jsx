@@ -1,6 +1,6 @@
 import { Box, Button, HStack, VStack, Grid, GridItem, /* PaginationRoot, PaginationNextTrigger,PaginationPrevTrigger */} from "@chakra-ui/react";
 import CalendarDays from "./CalendarDays";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
 const CalendarComp = () => {
@@ -52,6 +52,8 @@ const CalendarComp = () => {
             <Button
                 onClick={(e) => changeMonth(e.target.id)}
                 id="prev"
+               /*  disabled={true} */
+                variant="ghost"
             >
                 {"<"}
             </Button>
@@ -63,7 +65,7 @@ const CalendarComp = () => {
             </Button>
           </Box>
         </HStack>
-        <Box border="1px,solid, black">
+        <Box border="1px,solid, black" py="3">
           <Grid templateColumns="repeat(7, 1fr)" gap="6">
             {/* figure out fr and gap */}
             <GridItem>

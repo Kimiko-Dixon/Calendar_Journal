@@ -20,7 +20,7 @@ type Entry {
     date:Date!
     priorities:[Priority]
     habits:[Habit]
-    gratitudes:String
+    gratitudes:[Gratitude]
     freeWrite:String
     user:User
 }
@@ -43,6 +43,11 @@ type Habit {
     _id:ID 
     name:String!
     isDone:Boolean
+}
+
+type Gratitude {
+    _id:ID
+    text:String!
 }
 
 input EventInput {
@@ -84,12 +89,15 @@ type Mutation {
     editEvent(dayId:ID!,eventId:ID!,event:EventInput):Day
     deleteEvent(dayId:ID!,eventId:ID!):Day
     addEntry(date:Date!):Entry
-    editEntry(entryId:ID!,gratitudes:String,freeWrite:String):Entry
+    addGratitude(entryId:ID!,text:String!):Entry
+    editGratitude(entryId:ID!,gratitudeId:ID!,text:String!):Entry
+    deleteGratitude(entryId:ID!,gratitudeId:ID!):Entry
+    editFreeWrite(entryId:ID!,freeWrite:String):Entry
     addPriority(entryId:ID!,name:String!):Entry
     editPriority(entryId:ID!,priorityId:ID!,name:String,isDone:Boolean):Entry
     deletePriority(entryId:ID!,priorityId:ID!):Entry
     addHabit(entryId:ID!,name:String!):Entry
-    editHabit(entryId:ID!,habitId:ID!,isDone:Boolean!):Entry
+    editHabit(entryId:ID!,habitId:ID!,isDone:Boolean):Entry
     deleteHabit(entryId:ID!,habitId:ID!):Entry
 }
 `

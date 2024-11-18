@@ -98,6 +98,21 @@ export const ADD_ENTRY = gql`
   addEntry(date: $date) {
     _id
     date
+    freeWrite
+    gratitudes{
+      _id
+      text
+    }
+    priorities {
+      _id
+      name
+      isDone
+    }
+    habits {
+      _id
+      name
+      isDone
+    }
     user {
       _id
     }
@@ -105,12 +120,11 @@ export const ADD_ENTRY = gql`
 }
 `
 //✔
-export const EDIT_ENTRY = gql`
-   mutation EditEntry($entryId: ID!, $gratitudes: String, $freeWrite: String) {
-  editEntry(entryId: $entryId, gratitudes: $gratitudes, freeWrite: $freeWrite) {
+export const  EDIT_FREEWRITE = gql`
+   mutation EditEntry($entryId: ID!, $freeWrite: String) {
+  editFreeWrite(entryId: $entryId, freeWrite: $freeWrite) {
     _id
     date
-    gratitudes
     freeWrite
     user {
       _id
@@ -171,8 +185,8 @@ export const DELETE_PRIORITY = gql`
 `
 //✔ fix duplication on backend
 export const ADD_HABIT = gql`
-    mutation AddHabit($entryId: ID!, $habit: HabitInput!) {
-  addHabit(entryId: $entryId, habit: $habit) {
+    mutation AddHabit($entryId: ID!, $name: String!) {
+  addHabit(entryId: $entryId, name: $name) {
     _id
     date
     habits {
@@ -188,8 +202,8 @@ export const ADD_HABIT = gql`
 `
 //✔
 export const EDIT_HABIT = gql`
-    mutation EditHabit($entryId: ID!, $habitId: ID!, $habit: HabitInput!) {
-  editHabit(entryId: $entryId, habitId: $habitId, habit: $habit) {
+    mutation EditHabit($entryId: ID!, $habitId: ID!, $isDone:Boolean) {
+  editHabit(entryId: $entryId, habitId: $habitId, isDone:$isDone) {
     _id
     date
     habits {
@@ -213,6 +227,53 @@ export const DELETE_HABIT = gql`
       _id
       name
       isDone
+    }
+    user {
+      _id
+    }
+  }
+}
+`
+export const ADD_GRATITUDE = gql`
+    mutation AddGratitude($entryId: ID!, $text: String!) {
+  addGratitude(entryId: $entryId, text: $text) {
+    _id
+    gratitudes {
+      _id
+      text
+    }
+    date
+    user {
+      _id
+    }
+  }
+}
+`
+//✔
+export const EDIT_GRATITUDE = gql`
+   mutation EditGratitude($entryId: ID!, $gratitudeId: ID!, $text: String!) {
+  editGratitude(entryId: $entryId, gratitudeId: $gratitudeId, text: $text) {
+    _id
+    date
+    user {
+      _id
+    }
+    gratitudes {
+      _id
+      text
+    }
+  }
+}
+`
+//✔
+export const DELETE_GRATITUDE = gql`
+    mutation DeleteGratitude($entryId: ID!, $gratitudeId: ID!) {
+  deleteGratitude(entryId: $entryId, gratitudeId: $gratitudeId) {
+    _id
+    date
+    gratitudes {
+      _id
+      text
     }
     user {
       _id

@@ -11,15 +11,16 @@ import {ChakraProvider, createSystem,defineConfig} from '@chakra-ui/react'
 
 // import Nav from "./components/nav";
 
-const config = defineConfig({
+/* const config = defineConfig({
   theme: {
     tokens: {
       colors: {},
     },
+    recipes: {}
   },
 })
 
-const system = createSystem(config)
+const system = createSystem(config) */
 
 const httpLink = createHttpLink({
   uri: "/graphql",
@@ -43,12 +44,10 @@ const client = new ApolloClient({
 
 function App() {
   return (
-    <ChakraProvider value={system}>
-      <ApolloProvider client={client}>
+    <ApolloProvider client={client}>
       {/* <Nav /> */}
       <Outlet />
     </ApolloProvider>
-    </ChakraProvider>
     
   );
 }

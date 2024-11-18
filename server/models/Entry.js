@@ -1,6 +1,7 @@
 const {Schema,model} = require('mongoose')
 const Priority = require('./Priority')
 const Habit = require('./Habit')
+const Gratitude = require('./Gratitude')
 const date = require('date-and-time')
 
 const entrySchema = new Schema(
@@ -12,13 +13,10 @@ const entrySchema = new Schema(
         },
         priorities:[Priority],
         habits:[Habit],
-        gratitudes:{
-            type:String,
-            trim:true
-        },
+        gratitudes:[Gratitude],
         freeWrite:{
             type:String,
-            trim:true
+            
         },
         user:{
             type:Schema.Types.ObjectId,

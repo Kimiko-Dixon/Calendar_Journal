@@ -1,7 +1,7 @@
 import {
-  ADD_PRIORITY,
-  EDIT_PRIORITY,
-  DELETE_PRIORITY,
+  ADD_GRATITUDE,
+  EDIT_GRATITUDE,
+  DELETE_GRATITUDE,
 } from "../utils/mutations";
 import { useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
@@ -10,45 +10,46 @@ import { GET_ENTRY } from "../utils/queries";
 import { LuCheck, LuPencilLine, LuX } from "react-icons/lu";
 import { Editable, IconButton } from "@chakra-ui/react";
 
-const Priority = ({ entry, date }) => {
-  console.log(entry)
-  const [addPriority] = useMutation(ADD_PRIORITY);
-  const [editPriority] = useMutation(EDIT_PRIORITY);
-  const [deletePriority] = useMutation(DELETE_PRIORITY);
-  const [newPriority, setNewPriority] = useState("");
+const Gratitude = ({ entry, date }) => {
+  const [addGratitude] = useMutation(ADD_GRATITUDE);
+  const [editGratitude] = useMutation(EDIT_GRATITUDE);
+  const [deleteGratitude] = useMutation(DELETE_GRATITUDE);
+  const [newGratitude, setNewGratitude] = useState("");
   /* const { data: entryData } = useQuery(GET_ENTRY, {
     variables: { date },
-  }); */
-  /* const todaysEntry = entryData?.getEntry || []; */
+  });
+  const todaysEntry = entryData?.getEntry || []; */
 
-  const handleEditPriority = async (priorityId, isDone) => {
-    try {
-      await editPriority({
-        variables: { entryId:entry?._id, priorityId, isDone: !isDone },
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleNewPriority = async () => {
-    // add priority to the database and clear newPriority
-    if (newPriority.trim() != "") {
+  /* const handleEditGratitude = async (gratitudeId) => {
+    if (newGratitude.trim() != "") {
       try {
-        await addPriority({
-          variables: { entryId:entry?._id, name: newPriority },
+        await editGratitude({
+          variables: { entryId: entry._id, gratitudeId},
         });
-        setNewPriority("");
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }; */
+
+  const handleNewGratitude = async () => {
+    // add gratitude to the database and clear newGratitude
+    if (newGratitude.trim() != "") {
+      try {
+        await addGratitude({
+          variables: { entryId: entry._id, text: newGratitude },
+        });
+        setNewGratitude("");
       } catch (err) {
         console.log(err);
       }
     }
   };
 
-  const handleDeletePriority = async (priorityId) => {
+  const handleDeleteGratitude = async (gratitudeId) => {
     try {
-      await deletePriority({
-        variables: { entryId:entry?._id, priorityId },
+      await deleteGratitude({
+        variables: { entryId: entry._id, gratitudeId },
         refetchQueries: [{ query: GET_ENTRY, variables: { date } }],
       });
     } catch (err) {
@@ -57,24 +58,24 @@ const Priority = ({ entry, date }) => {
   };
   return (
     <>
-      <form id="priorities-form">
-        {entry?.priorities?.map((priority) => {
+      <form id="gratitudes-form">
+        {entry?.gratitudes?.map((gratitude) => {
           return (
-            <div key={priority._id}>
-              <input
+            <div key={gratitude._id}>
+              {/* <input
                 type="checkbox"
-                name={priority.name}
-                id={priority._id}
-                checked={priority.isDone}
+                name={gratitude.name}
+                id={gratitude._id}
+                checked={gratitude.isDone}
                 onChange={(e) =>
-                  handleEditPriority(e.target.id, priority.isDone)
+                  handleEditGratitude(e.target.id, gratitude.isDone)
                 }
-              />
-              <label htmlFor={priority.name}>{priority.name}</label>
+              /> */}
+              <label htmlFor={gratitude.text}>{gratitude.text}</label>
               <IconButton
                 variant="ghost"
                 size="xs"
-                onClick={() => handleDeletePriority(priority._id)}
+                onClick={() => handleDeleteGratitude(gratitude._id)}
               >
                 <LuX />
               </IconButton>
@@ -82,9 +83,9 @@ const Priority = ({ entry, date }) => {
           );
         })}
         <Editable.Root
-          value={newPriority}
-          onValueChange={(e) => setNewPriority(e.value)}
-          onValueCommit={handleNewPriority}
+          value={newGratitude}
+          onValueChange={(e) => setNewGratitude(e.value)}
+          onValueCommit={handleNewGratitude}
           placeholder=""
         >
           <Editable.Preview />
@@ -112,4 +113,4 @@ const Priority = ({ entry, date }) => {
   );
 };
 
-export default Priority;
+export default Gratitude;
