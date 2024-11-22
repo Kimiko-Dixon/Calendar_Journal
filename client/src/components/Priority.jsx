@@ -3,29 +3,40 @@ import {
   EDIT_PRIORITY,
   DELETE_PRIORITY,
 } from "../utils/mutations";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_ENTRY } from "../utils/queries";
 ("use client");
 import { LuCheck, LuPencilLine, LuX } from "react-icons/lu";
-import { Editable, IconButton } from "@chakra-ui/react";
+import { Editable, IconButton, HStack } from "@chakra-ui/react";
 
-const Priority = ({ entry, date }) => {
-  console.log(entry)
+const Priority = ({ entryId, loading, priority, date }) => {
+  console.log(priority);
   const [addPriority] = useMutation(ADD_PRIORITY);
   const [editPriority] = useMutation(EDIT_PRIORITY);
   const [deletePriority] = useMutation(DELETE_PRIORITY);
-  const [newPriority, setNewPriority] = useState("");
-  /* const { data: entryData } = useQuery(GET_ENTRY, {
-    variables: { date },
-  }); */
-  /* const todaysEntry = entryData?.getEntry || []; */
+  const [name, setName] = useState("");
 
-  const handleEditPriority = async (priorityId, isDone) => {
+  useEffect(() => {
+    if (priority) {
+      setName(priority.name);
+    }
+  }, [loading]);
+
+  const handleEditPriority = async (editing) => {
     try {
-      await editPriority({
-        variables: { entryId:entry?._id, priorityId, isDone: !isDone },
-      });
+      console.log(editing)
+      if(editing === 'isDone'){
+        await editPriority({
+          variables: { entryId, priorityId: priority._id,isDone: !priority.isDone },
+        });
+      }
+      else {
+        await editPriority({
+          variables: { entryId, priorityId: priority._id, name},
+        });
+      }
+      
     } catch (err) {
       console.log(err);
     }
@@ -33,22 +44,22 @@ const Priority = ({ entry, date }) => {
 
   const handleNewPriority = async () => {
     // add priority to the database and clear newPriority
-    if (newPriority.trim() != "") {
+    if (name.trim() != "") {
       try {
         await addPriority({
-          variables: { entryId:entry?._id, name: newPriority },
+          variables: { entryId, name },
         });
-        setNewPriority("");
+        setName("");
       } catch (err) {
         console.log(err);
       }
     }
   };
 
-  const handleDeletePriority = async (priorityId) => {
+  const handleDeletePriority = async () => {
     try {
       await deletePriority({
-        variables: { entryId:entry?._id, priorityId },
+        variables: { entryId, priorityId: priority._id },
         refetchQueries: [{ query: GET_ENTRY, variables: { date } }],
       });
     } catch (err) {
@@ -58,33 +69,21 @@ const Priority = ({ entry, date }) => {
   return (
     <>
       <form id="priorities-form">
-        {entry?.priorities?.map((priority) => {
-          return (
-            <div key={priority._id}>
-              <input
-                type="checkbox"
-                name={priority.name}
-                id={priority._id}
-                checked={priority.isDone}
-                onChange={(e) =>
-                  handleEditPriority(e.target.id, priority.isDone)
-                }
-              />
-              <label htmlFor={priority.name}>{priority.name}</label>
-              <IconButton
-                variant="ghost"
-                size="xs"
-                onClick={() => handleDeletePriority(priority._id)}
-              >
-                <LuX />
-              </IconButton>
-            </div>
-          );
-        })}
+        <HStack>
+        {priority ? (
+          <input
+            type="checkbox"
+            name="isDone"
+            /* id={priority._id} */
+            checked={priority.isDone}
+            onChange={(e) => handleEditPriority(e.target.name)}
+          />
+        ) : null}
+
         <Editable.Root
-          value={newPriority}
-          onValueChange={(e) => setNewPriority(e.value)}
-          onValueCommit={handleNewPriority}
+          value={name}
+          onValueChange={(e) => setName(e.value)}
+          onValueCommit={priority ? handleEditPriority : handleNewPriority}
           placeholder=""
         >
           <Editable.Preview />
@@ -107,6 +106,12 @@ const Priority = ({ entry, date }) => {
             </Editable.SubmitTrigger>
           </Editable.Control>
         </Editable.Root>
+        {priority ? (
+          <IconButton variant="ghost" size="xs" onClick={handleDeletePriority}>
+            <LuX />
+          </IconButton>
+        ) : null}
+        </HStack>
       </form>
     </>
   );

@@ -25,7 +25,6 @@ const Journal = () => {
   const { loading,data: entryData } = useQuery(GET_ENTRY, {
     variables: { date },
   });
-  const [entry, setEntry] = useState();
   const [freeWrite,setFreeWrite] = useState("")
   console.log('freeWrite: ',freeWrite)
   
@@ -39,7 +38,6 @@ const Journal = () => {
         variables: { userId: user._id, date: date },
         refetchQueries: [{ query: GET_ENTRY, variables: { date } }],
       });
-      setEntry(data.addEntry);
       setFreeWrite(data.addEntry.freeWrite === null ? '' : data.addEntry.freeWrite)
       console.log('data: ',data,'entry:', data.addEntry,'freewrite: ', data.addEntry.freeWrite)
     } catch (err) {
@@ -49,15 +47,11 @@ const Journal = () => {
 
   useEffect(() => {
     if (dayjs(date).utc().format('YYYY-MM-DD') != dayjs(todaysEntry?.date).utc().format('YYYY-MM-DD')) {
-      /* console.log('test: ', dayjs(date).utc().format('YYYY-MM-DD') != dayjs(todaysEntry?.date).utc().format('YYYY-MM-DD'))
-      console.log(dayjs(todaysEntry?.date).utc().format('YYYY-MM-DD')) */
       handleNewEntry();
-      /* console.log('freeWrite: ',todaysEntry?.freeWrite) */
     }
   }, [date]);
 
   useEffect(()=>{
-    setEntry(todaysEntry);
     setFreeWrite(todaysEntry?.freeWrite === null ? '' : todaysEntry?.freeWrite)
     console.log('entry: ',todaysEntry)
   },[todaysEntry])
@@ -65,7 +59,7 @@ const Journal = () => {
   const handleFreeWriteEdit = async () => {
     try{
       await editFreeWrite({
-        variables:{entryId: entry._id, freeWrite}
+        variables:{entryId: todaysEntry._id, freeWrite}
       })
     }catch (err) {
       console.log(err);
@@ -84,10 +78,32 @@ const Journal = () => {
           console.log(e.target.value);
         }}
       />
-      <Priority entry={entry} date={date} />
-      <Habit entry={entry} date={date} />
-      <Gratitude entry={entry} date={date}/>
-      {/* freewrite */}
+      {todaysEntry?.priorities?.map((priority)=>{
+        return(
+          <div key={priority._id}>
+          <Priority entryId={todaysEntry?._id} loading = {loading} priority={priority} date={date} />
+        </div>
+        )
+      })}
+      <Priority entryId={todaysEntry?._id} loading = {loading} date={date} />
+
+      {todaysEntry?.habits?.map((habit)=>{
+        return(
+          <div key={habit._id}>
+          <Habit entryId={todaysEntry?._id} loading = {loading} habit={habit} date={date} />
+        </div>
+        )
+      })}
+      <Habit entryId={todaysEntry?._id} loading = {loading} date={date} />
+
+      {todaysEntry?.gratitudes?.map((gratitude)=>{
+        return(
+          <div key={gratitude._id}>
+          <Gratitude entryId={todaysEntry?._id} loading = {loading} gratitude={gratitude} date={date} />
+        </div>
+        )
+      })}
+      <Gratitude entryId={todaysEntry?._id} loading = {loading} date={date} />
       
         <form id="freewrite-form">
         <Editable.Root
