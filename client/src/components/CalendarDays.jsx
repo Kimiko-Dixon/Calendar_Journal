@@ -1,40 +1,48 @@
 import {
-  Button,
-  PopoverArrow,
-  PopoverBody,
-  PopoverContent,
-  PopoverRoot,
-  PopoverTitle,
-  PopoverTrigger,
+  Button
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Event from "./Event";
+import dayjs from "dayjs";
+import { GET_DAY } from "../utils/queries";
+import { useQuery } from "@apollo/client";
+
 /* import { Dayjs } from "dayjs" */
 
-const CalendarDays = ({ day }) => {
-  const [open, setOpen] = useState(false);
+const CalendarDays = ( {date, day, user} ) => {
+  console.log(user)
+  const {loading,data} = useQuery(GET_DAY,{
+    variables:{date}
+  })
+
+  const [addEventButton,setAddEventButton] = useState(false)
+  console.log("calendarDays: ",addEventButton)
+  /* useEffect(()=>{
+
+  },[addEventButton]) */
   return (
-    <PopoverRoot
-      positioning={{ placement: "bottom-end" }}
-      portalled={false}
-      open={open}
-      onOpenChange={(e) => setOpen(e.open)}
-    >
-      <PopoverTrigger asChild>
-        <Button
+    <>
+      <Button
           h="10svh"
           variant="plain"
           display="flex"
           justifyContent="left"
           alignItems="flex-start"
+          onDoubleClick={() => setAddEventButton(true)}
         >
           {day}
+          
+        
         </Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <PopoverArrow />
-        <PopoverBody>This is a popover</PopoverBody>
-      </PopoverContent>
-    </PopoverRoot>
+        {data?.getDay?.events?.map((event)=>{
+          return (
+            <div key={event._id}>
+               <Event event={event} user={user} date={date} day={data?.getDay} loading={loading} />
+            </div>
+          )
+        })}
+        {addEventButton ? (<Event addEventButton={addEventButton} setAddEventButton={setAddEventButton} user={user} date={date} day={data?.getDay} loading={loading}/>) : null}
+    </>
   );
 };
 

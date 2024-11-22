@@ -3,8 +3,8 @@ import CalendarDays from "./CalendarDays";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
-const CalendarComp = () => {
-  /* console.log(dayjs().month(0).format('MMMM')); */
+const CalendarComp = (props) => {
+  console.log(props);
 
   /* const [page,setPage] = useState(dayjs().month()+1) */
   const [month, setMonth] = useState(dayjs().month());
@@ -92,7 +92,9 @@ const CalendarComp = () => {
             {offsetDay > 0 ? <GridItem colSpan={offsetDay}/> : null}
             {daysInMonth.map((day) => {
                 return (
-                    <CalendarDays key={day} day={day}/>
+                    <div id="day-div"  key={day}>
+                      <CalendarDays day={day} date={`${year}-${month}-${day}`} {...props}  />
+                    </div>
                 )
             })}  
           </Grid>
