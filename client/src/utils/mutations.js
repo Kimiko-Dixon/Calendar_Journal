@@ -212,17 +212,27 @@ export const ADD_HABIT = gql`
 `;
 //✔
 export const EDIT_HABIT = gql`
-  mutation EditHabit($entryId: ID!, $habitId: ID!, $isDone: Boolean) {
-    editHabit(entryId: $entryId, habitId: $habitId, isDone: $isDone) {
+  mutation EditHabit(
+    $entryId: ID!
+    $habitId: ID!
+    $name: String
+    $isDone: Boolean
+  ) {
+    editHabit(
+      entryId: $entryId
+      habitId: $habitId
+      name: $name
+      isDone: $isDone
+    ) {
       _id
       date
+      user {
+        _id
+      }
       habits {
         _id
         name
         isDone
-      }
-      user {
-        _id
       }
     }
   }

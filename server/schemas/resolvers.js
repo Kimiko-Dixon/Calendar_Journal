@@ -222,10 +222,15 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
-    editHabit: async (parent, { entryId, isDone, habitId }, context) => {
+    editHabit: async (parent, { entryId,name,isDone, habitId }, context) => {
       if (context.user) {
         const entry = await Entry.findById({ _id: entryId });
-        entry.habits.id(habitId).isDone = isDone;
+        if(name){
+          entry.habits.id(habitId).name = name
+        }
+        if(isDone != null){
+          entry.habits.id(habitId).isDone = isDone;
+        }
         entry.markModified("habits");
         entry.save();
         return entry;
