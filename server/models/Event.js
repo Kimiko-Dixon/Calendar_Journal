@@ -9,17 +9,17 @@ const eventSchema = new Schema(
             type:String,
             required:true
         },
-        startTime:{
+        start:{
             type:Date,
             required:true,
             /* get:formatTime */
         },
-        endTime:{
+        end:{
             type:Date,
             required:true,
             /* get:formatTime */
         },
-        Location:{
+        location:{
             type:String,
         }
     },

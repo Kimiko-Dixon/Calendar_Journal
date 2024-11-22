@@ -19,8 +19,8 @@ export const GET_DAY = gql`
     events {
       _id
       name
-      startTime
-      endTime
+      start
+      end
       location
     }
     user {

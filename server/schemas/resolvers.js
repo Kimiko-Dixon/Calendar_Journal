@@ -7,9 +7,11 @@ const resolvers = {
   Date: new GraphQLScalarType({
     name: "Date",
     parseValue(value) {
+      /* console.log(typeof value) */
       return new Date(value);
     },
     serialize(value) {
+      /* console.log(typeof value) */
       return value;
     },
     parseLiteral(ast) {
@@ -95,7 +97,7 @@ const resolvers = {
     editEvent: async (parent, { dayId, eventId, event }, context) => {
       if (context.user) {
         const day = await Day.findById({ _id: dayId });
-        day.events.set({ eventId }, { event });
+        day.events.id(eventId).set(event)
         day.save();
         return day;
       }
@@ -105,7 +107,7 @@ const resolvers = {
       if (context.user) {
         return await Day.findOneAndUpdate(
           { _id: dayId },
-          { $pull: { events: { eventId } } },
+          { $pull: { events: { _id: eventId } } },
           { new: true }
         );
       }

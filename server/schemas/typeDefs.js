@@ -28,8 +28,8 @@ type Entry {
 type Event {
     _id:ID 
     name:String!
-    startTime:Date!
-    endTime:Date!
+    start:Date!
+    end:Date!
     location:String
 }
 
@@ -53,8 +53,8 @@ type Gratitude {
 input EventInput {
     _id:ID 
     name:String!
-    startTime:Date!
-    endTime:Date!
+    start:Date!
+    end:Date!
     location:String
 }
 
