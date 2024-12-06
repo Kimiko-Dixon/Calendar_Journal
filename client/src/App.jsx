@@ -7,27 +7,16 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { Outlet } from "react-router-dom";
-import {ChakraProvider, createSystem,defineConfig} from '@chakra-ui/react'
-
-// import Nav from "./components/nav";
-
-/* const config = defineConfig({
-  theme: {
-    tokens: {
-      colors: {},
-    },
-    recipes: {}
-  },
-})
-
-const system = createSystem(config) */
+import Nav from "./components/Nav";
+import Sidebar from "./components/Sidebar";
+import { Box } from "@chakra-ui/react";
 
 const httpLink = createHttpLink({
   uri: "/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
   return {
     headers: {
@@ -45,10 +34,10 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
-      {/* <Nav /> */}
-      <Outlet />
+      <Box id="container">
+        <Outlet />
+      </Box>
     </ApolloProvider>
-    
   );
 }
 

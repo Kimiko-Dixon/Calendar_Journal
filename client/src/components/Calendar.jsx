@@ -54,14 +54,16 @@ const CalendarComp = (props) => {
                 id="prev"
                /*  disabled={true} */
                 variant="ghost"
+                asChild
             >
-                {"<"}
+                <ion-icon name="arrow-back-circle-outline"/>
             </Button>
             <Button
                 onClick={(e) => changeMonth(e.target.id)}
                 id="next"
+                asChild
             >
-                {">"}
+                <ion-icon name="arrow-forward-circle-outline"/>
             </Button>
           </Box>
         </HStack>

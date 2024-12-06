@@ -8,7 +8,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import { GET_ENTRY } from "../utils/queries";
 ("use client");
 import { LuCheck, LuPencilLine, LuX } from "react-icons/lu";
-import { Editable, IconButton, HStack } from "@chakra-ui/react";
+import { Editable, IconButton, HStack, Text } from "@chakra-ui/react";
 
 const Priority = ({ entryId, loading, priority, date }) => {
   console.log(priority);
@@ -85,15 +85,16 @@ const Priority = ({ entryId, loading, priority, date }) => {
           onValueChange={(e) => setName(e.value)}
           onValueCommit={priority ? handleEditPriority : handleNewPriority}
           placeholder=""
+          autoResize={true}
         >
           <Editable.Preview />
-          <Editable.Input />
+          <Editable.Input/>
           <Editable.Control>
-            <Editable.EditTrigger asChild>
+            {priority ? null : (<Editable.EditTrigger asChild>
               <IconButton variant="ghost" size="xs">
                 <LuPencilLine />
               </IconButton>
-            </Editable.EditTrigger>
+            </Editable.EditTrigger>)}
             <Editable.CancelTrigger asChild>
               <IconButton variant="outline" size="xs">
                 <LuX />
@@ -108,7 +109,7 @@ const Priority = ({ entryId, loading, priority, date }) => {
         </Editable.Root>
         {priority ? (
           <IconButton variant="ghost" size="xs" onClick={handleDeletePriority}>
-            <LuX />
+            <ion-icon name="trash-outline"></ion-icon>
           </IconButton>
         ) : null}
         </HStack>
